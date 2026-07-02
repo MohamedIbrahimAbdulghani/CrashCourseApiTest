@@ -10,4 +10,5 @@ Route::get('/user', function (Request $request) {
 
 Route::group(["namespace" => "API"], function() {
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
 });

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -43,6 +45,42 @@ class AuthController extends Controller
                 'message' => $e->getMessage()
             ], 500);
 
+        }
+    }
+
+    public function register(Request $request) {
+        try {
+            $rules = [
+                'name' => 'required',
+                'email' => 'required',
+                'password' => 'required'
+            ];
+            $validator = Validator::make($request->all(), $rules); // Validate the request data against the defined rules
+            if($validator->fails()) { // Check if validation fails
+                return response()->json([ // Return a JSON response with validation errors
+                    'success' => false,
+                    'message' => $validator->errors()
+                ], 400);
+            }
+            // to create new user
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            if($user) {
+                return $this->login($request);
+            }
+            return response()->json([
+                'success' => true,
+                'data' => $user
+            ]);
+
+        } catch(\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }
