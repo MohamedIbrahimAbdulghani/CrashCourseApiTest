@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ApiHandler;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use ApiHandler;   //  this trait is used to handle the API responses in a consistent manner
+
+
     /**
      * Display a listing of the resource.
      */
@@ -14,16 +18,9 @@ class CategoryController extends Controller
     {
         $categories = Category::all();
         if($categories) {
-            return response()->json([
-            'status' => true,
-            'message' => trans('messages.categories_retrieved'),
-            'data' => $categories
-        ], 200);
+            return $this->successMessage(trans('messages.categories_retrieved'), $categories, 200);
         } else {
-            return response()->json([
-            'status' => false,
-            'message' => 'No categories found',
-        ], 404);
+            return $this->errorMessage(trans('messages.categories_not_found'), null, 404);
         }
     }
 
@@ -45,16 +42,9 @@ class CategoryController extends Controller
             'name_en' => $request->name_en,
         ]);
         if($category){
-            return response()->json([
-                'status' => true,
-                'message' => 'Category created successfully',
-                'data' => $category
-            ], 201);
+            return $this->successMessage(trans('messages.category_created'), $category, 201);
         } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Category creation failed',
-            ], 400);
+            return $this->errorMessage(trans('messages.category_creation_failed'), null, 400);
         }
     }
 
@@ -63,18 +53,11 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::find($id);
         if($category) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Category retrieved successfully',
-                'data' => $category
-            ], 200);
+            return $this->successMessage(trans('messages.category_retrieved'), $category, 200);
         } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Category not found',
-            ], 404);
+            return $this->errorMessage(trans('messages.category_not_found'), null, 404);
         }
     }
 
@@ -91,22 +74,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::find($id);
         if($category) {
             $category->update([
             'name_ar' => $request->name_ar,
             'name_en' => $request->name_en,
         ]);
-            return response()->json([
-                'status' => true,
-                'message' => 'Category updated successfully',
-                'data' => $category
-            ], 200);
+            return $this->successMessage(trans('messages.category_updated'), $category, 200);
         } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Category not found',
-            ], 404);
+            return $this->errorMessage(trans('messages.category_not_found'), null, 404);
         }
     }
 
@@ -115,18 +91,12 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::find($id);
         if($category) {
             $category->delete();
-            return response()->json([
-                'status' => true,
-                'message' => 'Category deleted successfully',
-            ], 200);
+            return $this->successMessage(trans('messages.category_deleted'), $category, 200);
         } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Category not found',
-            ], 404);
+            return $this->errorMessage(trans('messages.category_not_found'), null, 404);
         }
     }
 }

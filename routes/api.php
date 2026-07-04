@@ -14,7 +14,7 @@ Route::get('/user', function (Request $request) {
 
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
-    Route::group(['middleware' => ['verifyToken', 'LangSwitcher', 'CheckPasswordAPI']], function() {
+    Route::group(['middleware' => ['verifyToken', 'LangSwitcher']], function() {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('refresh', [AuthController::class, 'refresh']);
         Route::apiResource('categories', CategoryController::class);
