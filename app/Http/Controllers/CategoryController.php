@@ -16,7 +16,7 @@ class CategoryController extends Controller
         if($categories) {
             return response()->json([
             'status' => true,
-            'message' => 'Categories retrieved successfully',
+            'message' => trans('messages.categories_retrieved'),
             'data' => $categories
         ], 200);
         } else {
